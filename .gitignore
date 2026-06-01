@@ -1,0 +1,9 @@
+# Python
+experiments/.venv/
+experiments/.env
+experiments/week2/.chroma/
+experiments/week2/.memory/
+__pycache__/
+*.pyc
+.Python
+experiments/.pytest_cache/

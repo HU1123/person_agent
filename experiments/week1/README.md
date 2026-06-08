@@ -56,6 +56,14 @@ warmup           llm_hello            structured_output    function_call
 - Python 的 `Optional[str]` 对应 TypeScript 的什么类型？
 - Pydantic 校验失败时抛出什么异常？
 
+<details>
+<summary>参考答案</summary>
+
+- **`Optional[str]`** 等价于 `str | None`，对应 TypeScript 的 `string | null | undefined`（或 `string?`）。见 `00_python_warmup.py` 中 `find_user` 的注释。
+- 校验失败时抛出 **`pydantic.ValidationError`**，可通过 `e.error_count()` 查看错误数量。
+
+</details>
+
 ---
 
 ## 1. LLM 基础认知
@@ -139,6 +147,14 @@ CoT 示例 prompt：
 - 如果 LLM 返回的 JSON 缺少必填字段，Pydantic 会怎样？
 - 为什么 Agent 应用需要结构化输出而不只是自然语言？
 
+<details>
+<summary>参考答案</summary>
+
+- `MovieReview.model_validate_json()` 会抛出 **`ValidationError`**，说明缺少哪个字段或类型/范围不合法（如 `rating` 不在 1–10）。
+- Agent 下游常需**程序化处理**（路由、写库、调 API、多步编排），自然语言难以稳定解析；结构化输出提供**可校验的契约**，减少幻觉和解析失败。
+
+</details>
+
 ---
 
 ## 3. 从调用到 Agent
@@ -158,27 +174,26 @@ CoT 示例 prompt：
 - 为什么 Agent 应用需要关注 token 用量？
 - system prompt 对输出风格有多大影响？试着改改看效果。
 
+<details>
+<summary>参考答案</summary>
+
+- **成本**（按 token 计费）、**上下文窗口**（多轮对话 + 工具结果会快速累积）、**延迟**（token 越多越慢），以及工程上的历史裁剪、摘要、选模型等决策。
+- 影响很大。`llm_hello.py` 中 system 要求「简洁、不超过 50 字」会明显缩短输出；改成「详细解释」则风格相反。system 相当于**全局行为设定**。
+
+</details>
+
 ### 3.2 实验：function_call.py
 
 **运行**：`python function_call.py`
 
 **目标**：理解 Function Calling 的单次流程。
 
-```
-用户: "北京天气怎么样？"
-         │
-         ▼
-    ┌─────────┐
-    │   LLM   │ → 返回 tool_call: get_weather("北京")
-    └────┬────┘
-         ▼
-    ┌─────────┐
-    │ 执行工具 │ → "北京当前天气：晴，15°C"
-    └────┬────┘
-         ▼
-    ┌─────────┐
-    │   LLM   │ → "北京今天晴，15°C，比较干燥。"
-    └─────────┘
+```mermaid
+flowchart TD
+    A["用户: 「北京天气怎么样？」"] --> B["LLM"]
+    B -->|"tool_call: get_weather('北京')"| C["执行工具"]
+    C -->|"北京当前天气：晴，15°C"| D["LLM"]
+    D -->|"北京今天晴，15°C，比较干燥。"| E["最终回答"]
 ```
 
 **观察**：
@@ -190,36 +205,32 @@ CoT 示例 prompt：
 - 如果用户问「今天适合出门吗」，LLM 会调用工具吗？
 - 工具 schema 的 description 字段有什么作用？
 
+<details>
+<summary>参考答案</summary>
+
+- **不一定**。问题未指定城市，模型可能先追问、给泛泛建议而不调工具，或在 system 引导下假设默认城市后调用 `get_weather`。`function_call.py` 的 `main()` 用的就是这个问题，跑一次可观察实际行为。
+- `description` 是给 LLM 的**工具说明书**，说明何时用、能做什么；写清楚（如「查询指定城市的当前天气信息…」）时，模型更容易在需要实时数据时选中正确工具。参数里的 `city` description 也帮助正确填参。
+
+</details>
+
 ### 3.3 实验：mini_agent.py
 
 **运行**：`python mini_agent.py`
 
 **目标**：手写 ReAct Agent 循环，理解 Agent 的核心机制。
 
-```
-Agent = LLM + Tools + Loop
+```mermaid
+flowchart TD
+    subgraph loop["mini_agent 主循环 · Agent = LLM + Tools + Loop"]
+        A["messages += user"] --> B["LLM chat (tools)"]
+        B --> C{有 tool_calls?}
+        C -->|是| D["执行 tool"]
+        D --> E["observation 塞回 messages"]
+        E --> B
+        C -->|否 · 纯文本回复| F["return 最终答案"]
+    end
 
-┌──────────────────────────────────────────┐
-│           mini_agent 主循环               │
-└──────────────────────────────────────────┘
-                    │
-         ┌──────────▼──────────┐
-         │  messages += user   │
-         └──────────┬──────────┘
-                    │
-         ┌──────────▼──────────┐
-         │  LLM chat (tools)   │◀──── max_iterations 防死循环
-         └──────────┬──────────┘
-                    │
-            ┌───────┴───────┐
-            │               │
-      有 tool_calls?    纯文本回复
-            │               │
-            ▼               ▼
-    执行 tool          return 最终答案
-    observation 塞回 messages
-            │
-            └──▶ 继续循环
+    G["max_iterations 防死循环"] -.-> B
 ```
 
 **观察**：
@@ -232,23 +243,27 @@ Agent = LLM + Tools + Loop
 - 如果 LLM 陷入重复调用同一工具的循环，怎么解决？
 - 第 2 周用 LangGraph 重写时，这些概念对应什么？
 
+<details>
+<summary>参考答案</summary>
+
+- **`function_call.py`**：无循环，固定「LLM → 工具 → LLM」一次。**`mini_agent.py`**：有 `for` 循环，可多次 tool_call（如比较两城温度需查两次），直到 LLM 不再返回 `tool_calls` 或达到 `MAX_ITERATIONS`。
+- 设置 **`max_iterations` 上限**；检测同一工具+相同参数重复 N 次则中断或注入提示；改 prompt 要求不重复查询；降低 temperature；LangGraph 侧用 `recursion_limit`。
+- 对照 `experiments/week2/agent_langgraph.py`：`messages` → `AgentState`；LLM 调用 → `agent_node`；工具执行 → `ToolNode`；`if tool_calls` → `route_after_agent` 条件边；`for` 循环 → `agent → tools → agent` 回边；`MAX_ITERATIONS` → `recursion_limit`。
+
+</details>
+
 ---
 
 ## 4. 核心概念
 
-```
-┌─────────────────────────────────────────┐
-│              Agent 三要素                │
-├─────────────────────────────────────────┤
-│                                         │
-│   ┌─────┐    ┌───────┐    ┌──────┐     │
-│   │ LLM │ +  │ Tools │ +  │ Loop │     │
-│   └──┬──┘    └───┬───┘    └──┬───┘     │
-│      │           │           │         │
-│   推理决策     执行动作     循环直到      │
-│   选工具       获取信息     得出答案      │
-│                                         │
-└─────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph agent["Agent 三要素"]
+        LLM["LLM<br/>推理决策 · 选工具"]
+        Tools["Tools<br/>执行动作 · 获取信息"]
+        Loop["Loop<br/>循环直到得出答案"]
+        LLM --- Tools --- Loop
+    end
 ```
 
 - **LLM**：大脑，负责理解意图、规划步骤、生成回答
@@ -264,6 +279,17 @@ Agent = LLM + Tools + Loop
 3. Function Calling 的 tool schema 相当于什么编程概念？（提示：类似 API 的什么？）
 4. 如果 LLM 返回了格式错误的 JSON，你的应用应该怎么处理？
 5. temperature=0 一定比 temperature=1 好吗？什么场景需要高 temperature？
+
+<details>
+<summary>参考答案</summary>
+
+1. **ChatBot** 通常是单轮或固定多轮对话，LLM 只生成文本。**Agent** 还有 **Tools + Loop**，能主动决策调用外部能力、多步执行直到任务完成（LLM + Tools + Loop 三要素）。
+2. 先理解底层机制（messages 累积、tool 回传、循环终止、防死循环），再用框架；没手写经验时调试 LangGraph 节点/状态/条件边会更难。
+3. 类似 **OpenAPI 接口文档**（或 TS 函数签名 + JSDoc）：声明函数名、用途、参数类型与必填项；LLM 像动态客户端，你的代码是服务端实现。
+4. **预防**：`response_format={"type": "json_object"}`；**解析**：`model_validate_json()` 捕获 `ValidationError`；**恢复**：重试或 strip markdown 代码块；**降级**：默认值 / 友好错误 / 打日志。
+5. 不是。**temperature=0** 适合事实问答、工具选择、结构化输出；**高 temperature** 适合创意写作、头脑风暴等需要多样性的场景。见 `llm_hello.py` Demo 2 对比。
+
+</details>
 
 ---
 

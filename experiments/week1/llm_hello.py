@@ -51,7 +51,7 @@ def demo_temperature() -> None:
     print("Demo 2: Temperature 对比")
     print("=" * 50)
 
-    prompt = "用一个词形容编程。"
+    prompt = "用一个词形容程序员。"
     print(f'\nPrompt: "{prompt}"\n')
 
     for temp in [0.0, 1.0]:

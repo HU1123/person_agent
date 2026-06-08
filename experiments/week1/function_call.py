@@ -68,7 +68,7 @@ def run_function_call(user_query: str) -> None:
 
 
 def main() -> None:
-    run_function_call("北京今天天气怎么样？")
+    run_function_call("今天适合出门吗？")
     print("\n✓ function_call 完成！")
 
 

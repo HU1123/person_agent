@@ -42,6 +42,18 @@ def analyze_review(review_text: str) -> MovieReview:
         ],
         temperature=0.3,
         response_format={"type": "json_object"},
+        # response_format={"type": "json_schema", "json_schema": {
+        #     "name": "MovieReview",
+        #     "schema": {
+        #         "type": "object",
+        #         "properties": {
+        #             "sentiment": {"type": "string", "enum": ["正面", "负面", "中性"]},
+        #             "rating": {"type": "integer", "minimum": 1, "maximum": 10},
+        #             "summary": {"type": "string", "description": "一句话总结"},
+        #         },
+        #         "required": ["rating", "sentiment", "summary"],
+        #     },
+        # }}
     )
 
     raw_json = response.choices[0].message.content or "{}"

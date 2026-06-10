@@ -56,7 +56,7 @@ class AgentState(TypedDict):
 
 @tool
 def remember_fact(key: str, value: str) -> str:
-    """将用户事实写入长期记忆，例如 name=小明。"""
+    """将用户事实写入长期记忆"""
     MemoryStore(MEMORY_STORE_PATH).save_fact(key, value)
     return f"已记住: {key} = {value}"
 

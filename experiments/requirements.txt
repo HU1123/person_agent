@@ -10,5 +10,7 @@ langchain-community>=0.3
 chromadb>=0.5
 fastembed>=0.4
 numpy<2.0
+# week2 MCP（路线 B：最小 Server）
+mcp[cli]>=1.2
 # tests
 pytest>=8.0

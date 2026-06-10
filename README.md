@@ -2,6 +2,9 @@
 
 个人 AI Agent 学习项目。通过实践 Cursor、OpenSpec 等工具，探索规范驱动开发（Spec-Driven Development）与 AI 辅助编程的工作流。
 
+文档总结：
+https://hcnzzf4m2k4n.feishu.cn/wiki/J4njwu6VKigonBkJHfocogWKnFb
+
 ## 项目目标
 
 - 学习如何在 Cursor 中与 AI Agent 协作开发

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "echo-demo": {
+      "command": "/Users/huqiang/WebstormProjects/personal/agent/experiments/.venv/bin/python",
+      "args": [
+        "/Users/huqiang/WebstormProjects/personal/agent/experiments/week2/echo_server.py"
+      ]
+    }
+  }
+}

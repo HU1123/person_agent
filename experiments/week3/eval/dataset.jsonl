@@ -1,0 +1,10 @@
+{"id": "q01", "question": "第 3 周的学习目标是什么？", "reference": "从「能跑」到「能交付」，补齐流式、异步、健壮性、可观测、评测、安全等工程能力"}
+{"id": "q02", "question": "SSE 是用来做什么的？", "reference": "实现打字机效果的流式输出，逐 token 推送给客户端"}
+{"id": "q03", "question": "什么是令牌桶限流？", "reference": "进程内限流方案，以固定速率补充令牌，请求消耗令牌，超额则拒绝"}
+{"id": "q04", "question": "Langfuse 的作用是什么？", "reference": "记录 Agent 请求的 trace、延迟、token 和成本等可观测指标"}
+{"id": "q05", "question": "LLM-as-judge 是什么？", "reference": "用 LLM 按固定 rubric 对 Agent 回答的准确率和相关性打分"}
+{"id": "q06", "question": "精确缓存如何节省成本？", "reference": "相同输入命中缓存时直接返回结果，跳过 LLM 调用"}
+{"id": "q07", "question": "Prompt Injection 防护做什么？", "reference": "在请求进入 Agent 前检测指令覆盖类注入并拦截或清洗"}
+{"id": "q08", "question": "本周产出是什么？", "reference": "一个健壮、可观测、有评测的 Agent 服务雏形"}
+{"id": "q09", "question": "重试失败后会怎样？", "reference": "指数退避重试耗尽后返回降级回复，不抛出未处理异常"}
+{"id": "q10", "question": "asyncio.gather 有什么用处？", "reference": "并发发起多个异步请求，相比串行可显著降低总耗时"}

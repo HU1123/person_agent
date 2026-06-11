@@ -3,6 +3,9 @@ experiments/.venv/
 experiments/.env
 experiments/week2/.chroma/
 experiments/week2/.memory/
+experiments/week3/.chroma/
+experiments/week3/.memory/
+experiments/week3/eval/reports/
 __pycache__/
 *.pyc
 .Python

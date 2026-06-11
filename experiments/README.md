@@ -40,9 +40,10 @@ python agent_langgraph.py
 experiments/
 ├── requirements.txt
 ├── .env.example
-├── tests/              # week2 TDD 单元测试
+├── tests/              # week2/week3 单元测试
 ├── week1/              # LLM 与 Agent 基础
-└── week2/              # 框架 + RAG + 记忆
+├── week2/              # 框架 + RAG + 记忆
+└── week3/              # 工程化：SSE 服务、健壮性、评测
 ```
 
 ## 运行说明
@@ -51,6 +52,9 @@ experiments/
 |------|----------|------|
 | week1 | `experiments/week1/` | 见 [week1/README.md](week1/README.md) |
 | week2 | `experiments/week2/` | 见 [week2/README.md](week2/README.md) |
+| week3 | `experiments/week3/` | 见 [week3/README.md](week3/README.md) |
 
 - LLM 脚本加载 `experiments/.env`
-- week2 首次 RAG 会下载 embedding 模型（见 week2 README）
+- week2/week3 首次 RAG 会下载 embedding 模型
+- week3 新增依赖：`fastapi`、`uvicorn[standard]`、`tenacity`、`langfuse`
+- week3 服务：`cd week3 && uvicorn app:app --reload --port 8000`

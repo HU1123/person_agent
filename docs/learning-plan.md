@@ -106,24 +106,26 @@
 
 **目标**:从「能跑」到「能交付」,补齐 Agent 特有的工程能力。
 
+> **状态**:进行中 — 见 [week3 教程](../experiments/week3/README.md)
+
 ### 1. 规范驱动开发(用本项目的 OpenSpec)
 - [ ] 1.1 用 `/opsx:propose` 提一个实验变更
 - [ ] 1.2 体验 `/opsx:apply` → `/opsx:archive` 流程
 
 ### 2. 流式与异步
-- [ ] 2.1 流式输出:SSE 实现打字机效果 → `experiments/week3/streaming.py`
-- [ ] 2.2 `asyncio` 高并发请求处理(对标 Node.js 异步)
+- [ ] 2.1 流式输出:SSE 实现打字机效果 → [流式与异步](../experiments/week3/README.md#2-流式与异步)
+- [ ] 2.2 `asyncio` 高并发请求处理(对标 Node.js 异步) → [concurrency_demo.py](../experiments/week3/concurrency_demo.py)
 
 ### 3. 健壮性(你后端经验可快速过)
-- [ ] 3.1 错误处理:超时、限流、重试、降级
-- [ ] 3.2 成本控制:缓存、prompt 压缩、模型分级路由
+- [ ] 3.1 错误处理:超时、限流、重试、降级 → [健壮性](../experiments/week3/README.md#3-健壮性)
+- [ ] 3.2 成本控制:缓存、prompt 压缩、模型分级路由 → [健壮性](../experiments/week3/README.md#3-健壮性)
 
 ### 4. 评测与可观测(Agent 特有,重点)
-- [ ] 4.1 接入 Tracing:LangSmith 或 Langfuse
-- [ ] 4.2 构建评测集:准确率、相关性、成本
-- [ ] 4.3 安全:敏感信息、内容审核、Prompt Injection 防护
+- [ ] 4.1 接入 Tracing:Langfuse → [可观测](../experiments/week3/README.md#4-可观测langfuse)
+- [ ] 4.2 构建评测集:准确率、相关性、成本 → [评测](../experiments/week3/README.md#6-评测llm-as-judge)
+- [ ] 4.3 安全:敏感信息、Prompt Injection 防护 → [安全防护](../experiments/week3/README.md#5-安全防护)
 
-**本周产出**:一个健壮、可观测、有评测的 Agent 服务
+**本周产出**:一个健壮、可观测、有评测的 Agent 服务 → [week3/app.py](../experiments/week3/app.py)
 
 ---
 
